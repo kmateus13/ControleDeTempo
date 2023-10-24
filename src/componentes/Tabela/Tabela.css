@@ -1,0 +1,34 @@
+
+.container{
+    margin-top: 30px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #000;
+}
+
+td {
+    text-align: center;
+}
+
+.circuloVermelho{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: red;
+    display: block;
+    margin: 0 auto;
+}
+.circuloVerde{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: green;
+    display: block;
+    margin: 0 auto;
+}
