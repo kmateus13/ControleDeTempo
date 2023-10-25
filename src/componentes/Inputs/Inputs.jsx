@@ -25,6 +25,7 @@ export default function Inputs() {
         // tempoReal: TempoInicio.getTime(),
         // tempoFim: campoTempoFim,
         // TempoDuracao: campoTempoDuracao,
+        pausado: false,
         status: false,
         // botao: campoBotao,
     }

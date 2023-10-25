@@ -38,7 +38,7 @@ export default function Tabela({status}) {
                 <tbody>
                     {dados.map((dado) => (
                         dado.status === status && (
-                            <LinhaTabela id={dado.id} separador={dado.separador} numeroPedido={dado.numeroPedido} status={dado.status} tempoInicio={dado.tempoInicio} key={dado.id}/>
+                            <LinhaTabela id={dado.id} pausado={dado.pausado} separador={dado.separador} numeroPedido={dado.numeroPedido} status={dado.status} tempoInicio={dado.tempoInicio} key={dado.id}/>
                         )
                     ))}
                 </tbody>

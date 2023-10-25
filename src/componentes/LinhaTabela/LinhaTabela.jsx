@@ -2,9 +2,12 @@ import axios from "axios";
 import Cronometro from "../Cronometro/Cronometro";
 import { useEffect, useState } from "react";
 
-export default function LinhaTabela({ id, separador, numeroPedido, tempoInicio, status }) {
+
+export default function LinhaTabela({ id, separador, numeroPedido, tempoInicio, status, pausado }) {
 
     const [dados, setDados] = useState([])
+    const [estadoPausa, setEstadoPausa] = useState(pausado)
+    const [conteudoCronometro, setConteudoCronometro] = useState()
 
 
     function finalizar(e) {
@@ -36,7 +39,9 @@ export default function LinhaTabela({ id, separador, numeroPedido, tempoInicio, 
             tempoFim: tempoFim,
             TempoDuracao: diferencaFormatada,
             status: true,
+            pausado: estadoPausa,
             id: { e }
+
         }
 
 
@@ -49,7 +54,33 @@ export default function LinhaTabela({ id, separador, numeroPedido, tempoInicio, 
             })
     }
 
+
+    function pausar(e) {
+        // Inicie a solicitação com o estado atual
+        const novoEstadoPausa = !pausado;
+
+        axios.patch(`http://localhost:3000/posts/${e}`, { pausado: novoEstadoPausa, horaPausada: conteudoCronometro })
+            .then((response) => {
+                let resposta = response.data;
+                console.log(resposta);
+
+                // Atualize o estado após a resposta da solicitação ser bem-sucedida
+                setEstadoPausa(novoEstadoPausa);
+
+            })
+            .catch((erro) => {
+                console.log(erro);
+            });
+    }
+
+
+    const pegarHoraPausada = (valor) => {
+        setConteudoCronometro(valor)
+    }
+
+
     useEffect(() => {
+
         axios.get(`http://localhost:3000/posts/${id}`)
             .then((response) => {
 
@@ -59,8 +90,7 @@ export default function LinhaTabela({ id, separador, numeroPedido, tempoInicio, 
             }).catch((erro) => {
                 console.log(erro)
             })
-    }, [id])
-
+    }, [dados])
 
 
 
@@ -71,13 +101,19 @@ export default function LinhaTabela({ id, separador, numeroPedido, tempoInicio, 
             <td>{separador}</td>
             <td>{numeroPedido}</td>
             <td>{tempoInicio}</td>
-            <td>{dados.TempoDuracao ? dados.TempoDuracao : <Cronometro horaInicio={tempoInicio} />}</td>
+            <td>{dados.TempoDuracao ? dados.TempoDuracao : <Cronometro pegarHoraPausada={pegarHoraPausada} horaPausada={dados.horaPausada} horaInicio={tempoInicio} pausado={estadoPausa} />}</td>
             <td>{dados.tempoFim ? dados.tempoFim : "Aguardando..."}</td>
             <td>{dados.TempoDuracao ? dados.TempoDuracao : "Aguardando..."}</td>
             <td>
                 {status === true ? <div className="circuloVerde"></div> : <div className="circuloVermelho"></div>}
             </td>
-            <td>{status === true ? "Concluido" : <button value={id} onClick={(e) => finalizar(e.target.value)}>Finalizar</button>}</td>
+            <td>{status === true ? "Concluido"
+                :
+                <div>
+                    <button value={id} onClick={(e) => pausar(e.target.value)}>{dados.pausado ? "Retomar" : "Pausar"}</button>
+                    <button value={id} onClick={(e) => finalizar(e.target.value)}>Finalizar</button>
+                </div>
+            }</td>
         </tr>
     )
 }
